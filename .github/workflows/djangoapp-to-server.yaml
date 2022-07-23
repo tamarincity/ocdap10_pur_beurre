@@ -44,7 +44,6 @@ jobs:
         python -m pytest
     - name: Deploy to remote server via ssh
       if: github.ref == 'refs/heads/main' && job.status == 'success'
-    - name: Configure SSH
       run: |
         mkdir -p ~/.ssh/
         echo "$SSH_KEY" > ~/.ssh/deployment.key
