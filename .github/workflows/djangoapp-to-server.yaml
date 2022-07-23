@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python (python 3.10)
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Automatically Testing Python Application then deploy on heroku
+name: Automatically Testing Python Application then deploy on server
 
 # On push or pull_request on branch main
 on:
@@ -42,12 +42,15 @@ jobs:
         pip install pytest-django
         export PYTHONPATH=src
         python -m pytest
-    # Command to get token from heroku => heroku authorizations:create
-    - name: Deploy to Heroku with token and app name
-      env:
-        HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
-        HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+    - name: Deploy to remote server via ssh
       if: github.ref == 'refs/heads/main' && job.status == 'success'
-      run: |
-        git remote add heroku https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git
-        git push heroku HEAD:main -f
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.DOCEAN_PUR_BEURRE_SECRET }}
+        port: 22
+        script: |
+          cd ocdap10_pur_beurre
+          git pull origin master
+          git status
