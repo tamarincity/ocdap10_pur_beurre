@@ -12,10 +12,12 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 import dj_database_url
 import django_on_heroku
 from decouple import config
-import environ
+import environ  # pipenv install django-environ
 
 
 # Set env
@@ -27,6 +29,27 @@ environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env('DEBUG', default=False)
+
+# Sentry
+# if not DEBUG:
+#     sentry_sdk.init(
+#         dsn=env('SENTRY_DSN'),
+#         integrations=[
+#             DjangoIntegration(),
+#         ],
+
+#         # Set traces_sample_rate to 1.0 to capture 100%
+#         # of transactions for performance monitoring.
+#         # We recommend adjusting this value in production.
+#         traces_sample_rate=1.0,
+
+#         # If you wish to associate users to errors (assuming you are using
+#         # django.contrib.auth) you may enable sending PII data.
+#         send_default_pii=True
+#     )
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -34,13 +57,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('DJ_SECRET_KEY', default="blablabla")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG', default=False)
 
-
-ALLOWED_HOSTS_STR = env('ALLOWED_HOSTS', default=None)
-
-ALLOWED_HOSTS = ALLOWED_HOSTS_STR or ['djblogcicd.herokuapp.com', ]
+ALLOWED_HOSTS = env('ALLOWED_HOSTS', default=None)
 
 # Logging ===================
 LOGGING = {
