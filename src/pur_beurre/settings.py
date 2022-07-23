@@ -29,23 +29,26 @@ environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env('DEBUG', default=False)
 
 # Sentry
-sentry_sdk.init(
-    dsn=env('SENTRY_DSN', default="blablabla"),
-    integrations=[
-        DjangoIntegration(),
-    ],
+if not DEBUG:
+    sentry_sdk.init(
+        dsn=env('SENTRY_DSN'),
+        integrations=[
+            DjangoIntegration(),
+        ],
 
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    # We recommend adjusting this value in production.
-    traces_sample_rate=1.0,
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=1.0,
 
-    # If you wish to associate users to errors (assuming you are using
-    # django.contrib.auth) you may enable sending PII data.
-    send_default_pii=True
-)
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )
 
 
 # Quick-start development settings - unsuitable for production
@@ -53,9 +56,6 @@ sentry_sdk.init(
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('DJ_SECRET_KEY', default="blablabla")
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG', default=False)
 
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS', default=None)
