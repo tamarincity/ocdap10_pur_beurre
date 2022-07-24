@@ -45,30 +45,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Configure SSH
-        run: |
-          echo "trying to deploy"
-          mkdir -p ~/.ssh/
-          echo "$SSH_KEY" > ~/.ssh/staging.key
-          chmod 600 ~/.ssh/staging.key
-          cat >>~/.ssh/config <<END
-          Host staging
-            HostName 142.93.142.2
-            User pascal
-            IdentityFile ~/.ssh/staging.key
-            StrictHostKeyChecking no
-          END
-        env:
-          SSH_USER: ${{ secrets.USERNAME }}
-          SSH_KEY: ${{ secrets.PRIVATE_KEY }}
-          SSH_HOST: ${{ secrets.HOST }}
-
-      - name: Stop the server
-        run: ssh staging 'sudo supervisorctl stop all'
-
-      - name: Check out the source
-        run: ssh staging 'cd ocdap10_pur_beurre && git fetch && git reset --hard origin/main'
-
-      - name: Start the server
-        if: ${{ always() }}
-        run: ssh staging 'sudo supervisorctl start all'
+      - name: ls -a via ssh
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            sudo supervisorctl stop all
+            cd ocdap10_pur_beurre && git fetch && git reset --hard origin/main
+            sudo supervisorctl start all
+            touch blablablablabla.txt
+            ls -a
+          host: ${{ secrets.HOST }}
+          user: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY}}
