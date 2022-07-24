@@ -48,7 +48,7 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.DOCEAN_PUR_BEURRE_SECRET }}
+        key: ${{ secrets.PRIVATE_KEY }}
         port: 22
         script: |
           cd ocdap10_pur_beurre
