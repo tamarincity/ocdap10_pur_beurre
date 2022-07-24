@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
@@ -42,15 +42,33 @@ jobs:
         pip install pytest-django
         export PYTHONPATH=src
         python -m pytest
-    - name: Deploy to remote server via ssh
-      if: github.ref == 'refs/heads/main' && job.status == 'success'
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.DOCEAN_PUR_BEURRE_SECRET }}
-        port: 22
-        script: |
-          cd ocdap10_pur_beurre
-          git pull origin master
-          git status
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure SSH
+        run: |
+        echo "trying to deploy"
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName 142.93.142.2
+            User pascal
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ${{ secrets.USERNAME }}
+          SSH_KEY: ${{ secrets.PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.HOST }}
+
+      - name: Stop the server
+        run: ssh staging 'sudo supervisorctl stop all'
+
+      - name: Check out the source
+        run: ssh staging 'cd ocdap10_pur_beurre && git fetch && git reset --hard origin/main'
+
+      - name: Start the server
+        if: ${{ always() }}
+        run: ssh staging 'sudo supervisorctl start all'
