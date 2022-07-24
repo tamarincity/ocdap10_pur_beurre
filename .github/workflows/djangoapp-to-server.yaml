@@ -45,6 +45,8 @@ jobs:
     - name: Deploy to remote server via ssh
       if: github.ref == 'refs/heads/main' && job.status == 'success'
       run: |
+        echo "yep!"
+        echo "$SSH_USER @ $SSH_HOST"
         mkdir -p ~/.ssh/
         echo "$SSH_KEY" > ~/.ssh/deployment.key
         chmod 600 ~/.ssh/deployment.key
