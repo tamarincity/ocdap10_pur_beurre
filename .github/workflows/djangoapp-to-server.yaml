@@ -45,13 +45,12 @@ jobs:
     - name: Deploy to remote server via ssh
       if: github.ref == 'refs/heads/main' && job.status == 'success'
       uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.PASSWORD }}
-          port: 22
-          script: |
-          cd /home/pascal/ocdap10_pur_beurre
-          touch jesuisla.txt
-          git pull origin main
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.DOCEAN_PUR_BEURRE_SECRET }}
+        port: 22
+        script: |
+          cd ocdap10_pur_beurre
+          git pull origin master
           git status
