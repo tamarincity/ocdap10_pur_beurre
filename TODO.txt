@@ -1,3 +1,1 @@
-Remplacer " & " par " et " puis "&" par " et " dans le moteur de recherche
-
-Remplacer le texte par un le texte slugifié, mettre en list via "-"
+No todo left
