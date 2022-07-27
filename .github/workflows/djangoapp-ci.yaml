@@ -1,7 +1,5 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python (python 3.10)
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-
-name: Automatically Testing Python Application then deploy on server
+name: Automatically Testing the Django Application
 
 # On push or pull_request on branch main
 on:
@@ -42,33 +40,3 @@ jobs:
         pip install pytest-django
         export PYTHONPATH=src
         python -m pytest
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure SSH
-        run: |
-        echo "trying to deploy"
-          mkdir -p ~/.ssh/
-          echo "$SSH_KEY" > ~/.ssh/staging.key
-          chmod 600 ~/.ssh/staging.key
-          cat >>~/.ssh/config <<END
-          Host staging
-            HostName 142.93.142.2
-            User pascal
-            IdentityFile ~/.ssh/staging.key
-            StrictHostKeyChecking no
-          END
-        env:
-          SSH_USER: ${{ secrets.USERNAME }}
-          SSH_KEY: ${{ secrets.PRIVATE_KEY }}
-          SSH_HOST: ${{ secrets.HOST }}
-
-      - name: Stop the server
-        run: ssh staging 'sudo supervisorctl stop all'
-
-      - name: Check out the source
-        run: ssh staging 'cd ocdap10_pur_beurre && git fetch && git reset --hard origin/main'
-
-      - name: Start the server
-        if: ${{ always() }}
-        run: ssh staging 'sudo supervisorctl start all'
