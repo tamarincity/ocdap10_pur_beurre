@@ -137,6 +137,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+production.py
 
 # Spyder project settings
 .spyderproject
@@ -171,7 +172,9 @@ cython_debug/
 
 # Personal
 zzz*
+TODO.txt
 TODO*
 todo*
+screenshot_of*
 
 # End of https://www.toptal.com/developers/gitignore/api/django
