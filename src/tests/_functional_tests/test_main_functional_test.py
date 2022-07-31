@@ -14,11 +14,11 @@ class TestApplication:
             find = driver.find_element_by_xpath
 
             # Remove fake users from database
-            driver.get("http://localhost:5550/accounts_delete_fake_users")
+            driver.get("http://142.93.142.2/accounts_delete_fake_users")
 
             # Go to home page
             print("No characters after the domain name should take the user to the home page")
-            driver.get("http://localhost:5550")
+            driver.get("http://142.93.142.2")
             time.sleep(2)
             h1_content = find("//h1").text
             assert "Du gras, oui, mais de qualit" in h1_content
@@ -170,7 +170,7 @@ class TestApplication:
 
             time.sleep(2)
             # Remove fake users from database
-            driver.get("http://localhost:5550/accounts_delete_fake_users")
+            driver.get("http://142.93.142.2/accounts_delete_fake_users")
 
         except Exception as e:
             driver.save_screenshot("screenshot_of fail.png")
